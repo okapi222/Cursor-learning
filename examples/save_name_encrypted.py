@@ -6,7 +6,7 @@ from cryptography.fernet import Fernet
 FILENAME = "name.enc"
 KEY_FILE = "key.key"
 
-
+#test 1
 def load_or_create_key() -> bytes:
     try:
         with open(KEY_FILE, "rb") as f:
