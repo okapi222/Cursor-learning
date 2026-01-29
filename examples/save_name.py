@@ -4,7 +4,7 @@ from __future__ import annotations
 
 FILENAME = "name.txt"
 
-
+#test 1
 def main() -> None:
     print("Enter names (or 'q' to quit). Names are appended to name.txt.")
     while True:
