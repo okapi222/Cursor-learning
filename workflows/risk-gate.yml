@@ -1,0 +1,49 @@
+name: Risk Gate
+
+on:
+  pull_request:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  risk_gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install cryptography
+
+      - name: Get changed Python files
+        id: changed
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            git fetch origin ${{ github.base_ref }}
+            FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          else
+            FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          fi
+          echo "$FILES" | grep '\.py$' > py_files.txt || true
+          COUNT=$(wc -l < py_files.txt | tr -d ' ')
+          echo "count=$COUNT" >> $GITHUB_OUTPUT
+          if [ "$COUNT" -eq 0 ]; then
+            echo "No Python files changed, skipping risk gate."
+          else
+            echo "Changed .py files:"
+            cat py_files.txt
+          fi
+
+      - name: Run risk gate
+        if: steps.changed.outputs.count != '0'
+        run: |
+          python scripts/risk_gate.py $(cat py_files.txt)
