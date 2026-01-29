@@ -24,7 +24,7 @@ import re
 import sys
 from pathlib import Path
 from typing import Iterable
-# Test to see if we can trigger risk gate) ---
+# Test to see if we can trigger risk gate) 2---
 
 # --- Simple patterns (intentionally basic) ---
 
