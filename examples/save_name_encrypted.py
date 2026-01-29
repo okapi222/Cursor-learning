@@ -16,7 +16,7 @@ def load_or_create_key() -> bytes:
         with open(KEY_FILE, "wb") as f:
             f.write(key)
         return key
-
+#test 3
 
 def main() -> None:
     key = load_or_create_key()
